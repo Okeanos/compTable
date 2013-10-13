@@ -1,4 +1,4 @@
-compTableStructure = {
+compTableStructure = [
 	{
 		title: "Fundamentals",
 		id: "fundamentals",
@@ -50,4 +50,4 @@ compTableStructure = {
 			representation:  {name: "Policy Nesting", title: "Can policies be nested to create larger, more complex policies out of individual files?"}
 		}
 	}
-};
+];
