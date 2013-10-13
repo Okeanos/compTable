@@ -1,7 +1,7 @@
 (function ($) {
     var settings;
 
-    $.fn.compTable = function(options) {
+    $.fn.compTable = function( options ) {
 
         var defaults = {
             structure: "",
@@ -13,7 +13,7 @@
             classes: "",
         };
 
-        settings = $.extend({}, defaults, options);
+        settings = $.extend( {}, defaults, options );
 
         this.append(renderCompTables());
     };
@@ -22,53 +22,46 @@
         var startTime = new Date().getTime();
 
         var colCount = settings.columns;
-        var tempWrapper = $('<div></div>');
+        var tempWrapper = $();
 
-        $(compTableStructure).each(function(index) {
-            var tableIndex = index;
-            var tableTitle = this.title;
-            var tableLabel = $('<h3></h3>');
-            var table = $('<table><tbody></tbody></table>');
-            var tbody = $('tbody', table);
+        $(compTableStructure).each( function( index ) {
+            var table = $( "<table><caption></caption><tbody></tbody></table>" );
+            var tbody = $( "tbody", table );
 
-            tableLabel.addClass('group-label');
-            tableLabel.text(tableTitle);
+			table.attr( "id", this.id );
+            table.attr( "class", settings.classes );
 
-            table.attr('id', this.id);
-            table.attr('class', 'table');
-            table.attr('cellspacing', '0').attr('cellpadding', '0');
+
+			$("caption",table).html( this.title );
 
             /*
              * Table body
              */
             $(this.rows).each(function(index) {
-                var row = this;
-                var tr = $('<tr></tr>');
-                var label = $('<div></div>').html(row['name']);
-                var title = row['title'].trim();
+                var tr = $( "<tr></tr>" );
+				var label = $( "<td></td>" ).html(this.name);
+                var title = this.title.trim();
 
                 if(title.length > 0) {
-                    label.attr('title', title);
+                    label.attr( "title", title );
                 }
 
-                label = $('<td></td>').addClass('label').append(label);
                 tr.append(label);
 
                 for(var i = 1; i <= colCount; i++) {
-                    tr.append($('<td></td>'));
+                    tr.append($("<td></td>"));
                 }
 
                 tbody.append(tr);
             });
 
-            tempWrapper.append(tableLabel);
-            tempWrapper.append(table);
+            tempWrapper = tempWrapper.add(table);
         });
-        
-        var endTime = new Date().getTime();
-        console.log('Table(s) rendered in: ' + (endTime - startTime) + 'ms');
 
-        return tempWrapper.children();
+        var endTime = new Date().getTime();
+        console.log("Table(s) rendered in: " + (endTime - startTime) + "ms");
+
+        return tempWrapper;
     }
- 
+
 }(jQuery));
