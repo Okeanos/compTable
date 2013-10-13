@@ -1,0 +1,36 @@
+{
+    "name": "compTable",
+    "title": "compTable",
+    "description": "jQuery plugin to dynamically compare data in tables.",
+    "keywords": [
+        "compare",
+        "table"
+    ],
+    "version": "0.0.1",
+    "author": {
+        "name": "Nikolas Grottendieck",
+        "url": "http://nikolasgrottendieck.com"
+    },
+    "maintainers": [
+        {
+            "name": "Nikolas Grottendieck",
+            "url": "http://nikolasgrottendieck.com"
+        },
+        {
+            "name": "Jan Musmann"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/Okeanos/compTable/blob/master/LICENSE"
+        }
+    ],
+    "bugs": "https://github.com/Okeanos/compTable/issues",
+    "homepage": "https://github.com/Okeanos/compTable",
+    "docs": "https://github.com/Okeanos/compTable",
+    "download": "https://github.com/Okeanos/compTable",
+    "dependencies": {
+        "jquery": ">=1.10"
+    }
+}
