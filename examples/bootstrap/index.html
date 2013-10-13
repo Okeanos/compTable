@@ -14,6 +14,15 @@
 			body {
 				padding-top: 60px;
 			}
+
+			table > caption {
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+				font-weight: 500;
+				line-height: 1.1;
+				font-size: 24px;
+				text-align: left;
+				padding: 24px 0 6px 0;
+			}
 		</style>
 	</head>
 	<body>
@@ -95,15 +104,23 @@
 					columns: 3,
 					header: 'first',
 					footer: 'last',
-					classes: 'table',
+					classes: 'table table-bordered',
 				}
 			);
-			/*
 			$("#compTableC1, #compTableC2, #compTableC3").change(function(){
-				$.compTable.insertColumnData( 1, $("#compTableC1").val() );
-				$.compTable.insertColumnData( 2, $("#compTableC2").val() );
-				$.compTable.insertColumnData( 3, $("#compTableC3").val() );
-			});*/
+				$().compTable.insertColumnData( 0, $("#compTableC1").val() );
+				if("" === $("#compTableC1").val()) {
+					$().compTable.clearColumn( 0 );
+				}
+				$().compTable.insertColumnData( 1, $("#compTableC2").val() );
+				if("" === $("#compTableC2").val()) {
+					$().compTable.clearColumn( 1 );
+				}
+				$().compTable.insertColumnData( 2, $("#compTableC3").val() );
+				if("" === $("#compTableC3").val()) {
+					$().compTable.clearColumn( 2 );
+				}
+			});
 		});
 		</script>
 	</body>

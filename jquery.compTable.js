@@ -18,13 +18,13 @@
         this.append(renderCompTables());
     };
 
-    renderCompTables = function() {
+    function renderCompTables() {
         var startTime = new Date().getTime();
 
         var colCount = settings.columns;
         var tempWrapper = $();
 
-        $(compTableStructure).each( function( index ) {
+        $(settings.structure).each( function( index ) {
             var table = $( "<table><caption></caption><tbody></tbody></table>" );
             var tbody = $( "tbody", table );
 
@@ -39,7 +39,7 @@
              */
             $(this.rows).each(function(index) {
                 var tr = $( "<tr></tr>" );
-				var label = $( "<td></td>" ).html(this.name);
+				var label = $( "<th></th>" ).html(this.name);
                 var title = this.title.trim();
 
                 if(title.length > 0) {
@@ -63,5 +63,58 @@
 
         return tempWrapper;
     }
+
+	// Clear a column of any existing data, including headers and footers
+	$.fn.compTable.clearColumn = function(colIndex) {
+
+		// Shorthand references to structure
+		var tables = settings.structure;
+
+		// Iterate over the available tables
+		$(tables).each( function( tIndex ) {
+
+			// Clear headers and footers
+			$( "#" + tables[ tIndex ].id + " > thead > tr, "+
+			   "#" + tables[ tIndex ].id + " > tfoot > tr" ).
+					find( "td:eq(" + colIndex + ")"  ).html( "" );
+
+			// Clear body content
+			$( "#" + tables[ tIndex ].id + " > tbody > tr" ).each(function( dIndex ) {
+				$(this).find( "td:eq(" + colIndex + ")" ).html( "" );
+			});
+
+		});
+	}
+
+	// Insert data (dataId) into a column (colIndex), including headers and footers
+	$.fn.compTable.insertColumnData = function(colIndex, dataId) {
+
+		// Shorthand references to data and structure
+		var data = settings.content;
+		var tables = settings.structure;
+
+		if(typeof data[ dataId ] !== 'undefined') {
+
+			// Clear column of any existing data
+			$().compTable.clearColumn(colIndex);
+
+			// iterate over the available tables
+			$(tables).each( function( tIndex ) {
+
+				// Set correct header and footer text
+				$( "#" + tables[ tIndex ].id + " > thead > tr, "+
+			       "#" + tables[ tIndex ].id + " > tfoot > tr" ).
+					find( "td:eq(" + colIndex + ")"  ).html( dataId );
+
+				// Fill body with correct content
+				$( "#" + tables[ tIndex ].id + " > tbody > tr" ).each(function( dIndex ) {
+					$(this).
+						find( "td:eq(" + colIndex + ")" ).
+						html( data[ dataId ][ tIndex ][ dIndex ] );
+				});
+
+			});
+		}
+	}
 
 }(jQuery));
