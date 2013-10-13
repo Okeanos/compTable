@@ -103,7 +103,7 @@
 			// Clear headers and footers
 			$( "#" + tables[ tIndex ].id + " > thead > tr, "+
 			   "#" + tables[ tIndex ].id + " > tfoot > tr" ).
-					find( "td:eq(" + colIndex + ")"  ).html( "" );
+					find( "th:eq(" + colIndex + ")"  ).html( "" );
 
 			// Clear body content
 			$( "#" + tables[ tIndex ].id + " > tbody > tr" ).each( function( dIndex ) {
