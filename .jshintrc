@@ -4,6 +4,10 @@
     "eqeqeq": true,
     "eqnull": true,
     "expr": true,
+    "globals": {
+		"$": false,
+		"jQuery": false
+    },
     "immed": true,
     "noarg": true,
     "onevar": true,
