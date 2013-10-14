@@ -23,6 +23,11 @@
 				text-align: left;
 				padding: 24px 0 6px 0;
 			}
+
+			table > * > tr > th,
+			table > * > tr > td {
+				width: 25%;
+			}
 		</style>
 	</head>
 	<body>
@@ -35,10 +40,12 @@
 				</div>
 			</div>
 
-			<form id="compTableSelector">
+			<form id="compTableSelector" class="form-inline" role="form">
 				<fieldset>
-					<legend>Select data to compare</legend>
 					<div class="row">
+						<div class="col-lg-12">
+							<legend>Select data to compare</legend>
+						</div>
 						<div class="col-lg-4">
 							<select name="compTableC1" id="compTableC1" class="form-control">
 								<option value="">Please select/Empty</option>
@@ -91,25 +98,19 @@
 					structure: compTableStructure,
 					content: compTableContent,
 					columns: 3,
-					header: 'first',
-					footer: 'last',
-					classes: 'table table-bordered',
+					header: "first",
+					footer: "last",
+					tableAttr: {
+						"class": "table table-bordered",
+					}
 				}
 			);
 			$("#compTableC1, #compTableC2, #compTableC3").change(function(){
-				$().compTable.insertColumnData( 0, $("#compTableC1").val() );
-				if("" === $("#compTableC1").val()) {
-					$().compTable.clearColumn( 0 );
-				}
-				$().compTable.insertColumnData( 1, $("#compTableC2").val() );
-				if("" === $("#compTableC2").val()) {
-					$().compTable.clearColumn( 1 );
-				}
-				$().compTable.insertColumnData( 2, $("#compTableC3").val() );
-				if("" === $("#compTableC3").val()) {
-					$().compTable.clearColumn( 2 );
-				}
+				$().compTable.insertColumnData( 0, $("#compTableC1").val(), true);
+				$().compTable.insertColumnData( 1, $("#compTableC2").val(), true);
+				$().compTable.insertColumnData( 2, $("#compTableC3").val(), true);
 			});
+			$('th').tooltip({placement: "left", container: "body"});
 		});
 		</script>
 	</body>

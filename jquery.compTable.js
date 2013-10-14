@@ -10,7 +10,7 @@
             defaultValues: [],
             header: "first",
             footer: "last",
-            classes: "",
+            tableAttr: {},
         };
 
         settings = $.extend( {}, defaults, options );
@@ -24,17 +24,23 @@
         var tempWrapper = $();
 
 		// Create all necessary tables
-		$(settings.structure).each( function( index ) {
+		$(settings.structure).each( function( tIndex, tValue ) {
             var table = $( "<table><caption></caption><tbody></tbody></table>" );
             var tbody = $( "tbody", table );
 
-			table.attr( "id", this.id );
-            table.attr( "class", settings.classes );
+			// Assign defined id to each table
+			table.attr( "id", tValue.id );
 
-			$("caption",table).html( this.title );
+			// Give each table the general attributes
+			assignAttributes( settings.tableAttr, table );
+
+			// Assign the table specific attributes
+			assignAttributes( tValue.attr, table );
+
+			$("caption",table).html( tValue.title );
 
 			// Create first header
-			if(0 === index && 'first' === settings.header) {
+			if(0 === tIndex && 'first' === settings.header) {
 
 				var thead = $( "<thead></thead>" );
                 var tr = $( "<tr></tr>" );
@@ -49,7 +55,7 @@
 			}
 
 			// Create last footer
-			if(( settings.structure.length - 1 ) === index && 'last' === settings.footer) {
+			if(( settings.structure.length - 1 ) === tIndex && 'last' === settings.footer) {
 
 				var tfoot = $( "<tfoot></tfoot>" );
                 var tr = $( "<tr></tr>" );
@@ -64,17 +70,20 @@
 			}
 
             // Create table body
-            $( this.rows ).each( function( index ) {
+            $( this.rows ).each( function( rIndex, rValue ) {
 				var tr = $( "<tr></tr>" );
-				var label = $( "<th></th>" ).html( this.name );
-                var title = this.title.trim();
+				var th = $( "<th></th>" ).html( rValue.name );
 
-                if(title.length > 0) {
-                    label.attr( "title", title );
-                }
+                // Assign attributes to current row
+				assignAttributes( rValue.trAttr, tr );
 
-                tr.append(label);
+				// Assign attributes to table header in the current row
+				assignAttributes( rValue.thAttr, th );
 
+				// Add table header to current row
+                tr.append( th );
+
+				// Add empty columns to current row for the data to be compared
                 for(var i = 0; i < settings.columns; i++) {
                     tr.append( $( "<td></td> " ) );
                 }
@@ -94,19 +103,16 @@
 	// Clear a column of any existing data, including headers and footers
 	$.fn.compTable.clearColumn = function(colIndex) {
 
-		// Shorthand references to structure
-		var tables = settings.structure;
-
 		// Iterate over the available tables
-		$( tables ).each( function( tIndex ) {
+		$( settings.structure ).each( function( tIndex, tValue ) {
 
 			// Clear headers and footers
-			$( "#" + tables[ tIndex ].id + " > thead > tr, "+
-			   "#" + tables[ tIndex ].id + " > tfoot > tr" ).
+			$( "#" + tValue.id + " > thead > tr, "+
+			   "#" + tValue.id + " > tfoot > tr" ).
 					find( "th:eq(" + colIndex + ")"  ).html( "" );
 
 			// Clear body content
-			$( "#" + tables[ tIndex ].id + " > tbody > tr" ).each( function( dIndex ) {
+			$( "#" + tValue.id + " > tbody > tr" ).each( function( dIndex ) {
 				$( this ).find( "td:eq(" + colIndex + ")" ).html( "" );
 			});
 
@@ -114,33 +120,39 @@
 	}
 
 	// Insert data (dataId) into a column (colIndex), including headers and footers
-	$.fn.compTable.insertColumnData = function(colIndex, dataId) {
+	$.fn.compTable.insertColumnData = function(colIndex, dataId, clearOnEmpty) {
 
-		// Shorthand references to data and structure
-		var data = settings.content;
-		var tables = settings.structure;
+		clearOnEmpty = typeof clearOnEmpty !== 'undefined' ? clearOnEmpty : false;
 
-		if( typeof data[ dataId ] !== "undefined" ) {
-
-			// Clear column of any existing data
-			$().compTable.clearColumn( colIndex );
+		if( typeof settings.content[ dataId ] !== "undefined" ) {
 
 			// iterate over the available tables
-			$( tables ).each( function( tIndex ) {
+			$( settings.structure ).each( function( tIndex, tValue ) {
 
 				// Set correct header and footer text
-				$( "#" + tables[ tIndex ].id + " > thead > tr, "+
-			       "#" + tables[ tIndex ].id + " > tfoot > tr" ).
+				$( "#" + tValue.id + " > thead > tr, "+
+			       "#" + tValue.id + " > tfoot > tr" ).
 					find( "th:eq(" + colIndex + ")"  ).html( dataId );
 
 				// Fill body with correct content
-				$( "#" + tables[ tIndex ].id + " > tbody > tr" ).each( function( dIndex ) {
+				$( "#" + tValue.id + " > tbody > tr" ).each( function( dIndex ) {
 					$( this ).
 						find( "td:eq(" + colIndex + ")" ).
-						html( data[ dataId ][ tIndex ][ dIndex ] );
+						html( settings.content[ dataId ][ tIndex ][ dIndex ] );
 				});
 
 			});
+		} else if (clearOnEmpty) {
+			// Clear column of any existing data
+			$().compTable.clearColumn( colIndex );
+		}
+	}
+
+	function assignAttributes (source, target) {
+		if( typeof source !== "undefined" ) {
+			for( var attrIndex in source ) {
+				target.attr( attrIndex, source[ attrIndex ] );
+			}
 		}
 	}
 
