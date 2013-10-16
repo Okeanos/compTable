@@ -1,3 +1,8 @@
+/*
+ * compTable - a jQuery plugin to dynamically compare information in tables
+ * @copyright Nikolas Grottendieck, Jan Musmann 2013
+ * @license https://github.com/Okeanos/compTable/blob/master/LICENSE
+ */
 (function( $ ) {
 	var settings;
 
@@ -19,8 +24,7 @@
 	};
 
 	function renderCompTables() {
-		var /*startTime = new Date().getTime(), */
-			tempWrapper = $();
+		var tempWrapper = $();
 
 		// Create all necessary tables
 		$(settings.structure).each( function( tIndex, tValue ) {
@@ -36,17 +40,17 @@
 			// Assign the table specific attributes
 			assignAttributes( tValue.attr, table );
 
-			$("caption",table).html( tValue.title );
+			$( "caption", table ).html( tValue.title );
 
 			// Create first header
-			if(0 === tIndex && "first" === settings.header) {
+			if( 0 === tIndex && "first" === settings.header ) {
 
 				var thead = $( "<thead></thead>" ),
 					tr = $( "<tr></tr>" );
 
 				tr.append( $( "<td></td>" ) );
 
-				for(var i = 0; i < settings.columns; i++) {
+				for( var i = 0; i < settings.columns; i++ ) {
 					tr.append( $( "<th></th>" ) );
 				}
 
@@ -55,14 +59,14 @@
 			}
 
 			// Create last footer
-			if(( settings.structure.length - 1 ) === tIndex && "last" === settings.footer) {
+			if(( settings.structure.length - 1 ) === tIndex && "last" === settings.footer ) {
 
 				var tfoot = $( "<tfoot></tfoot>" ),
 					tr = $( "<tr></tr>" );
 
 				tr.append( $( "<td></td>" ) );
 
-				for(var i = 0; i < settings.columns; i++) {
+				for( var i = 0; i < settings.columns; i++ ) {
 					tr.append( $( "<th></th>" ) );
 				}
 
@@ -85,8 +89,8 @@
 				tr.append( th );
 
 				// Add empty columns to current row for the data to be compared
-				for(var i = 0; i < settings.columns; i++) {
-					tr.append( $( "<td></td> " ) );
+				for( var i = 0; i < settings.columns; i++ ) {
+					tr.append( $( "<td></td>" ) );
 				}
 
 				tbody.append( tr );
@@ -94,9 +98,6 @@
 
 			tempWrapper = tempWrapper.add( table );
 		});
-
-//		var endTime = new Date().getTime();
-//		console.log( "Table(s) rendered in: " + ( endTime - startTime ) + "ms" );
 
 		return tempWrapper;
 	}
