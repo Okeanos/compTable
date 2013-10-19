@@ -7,7 +7,6 @@
 	var settings;
 
 	$.fn.compTable = function( options ) {
-
 		var defaults = {
 			structure: "",
 			content: "",
@@ -20,11 +19,40 @@
 
 		settings = $.extend( {}, defaults, options );
 
-		this.append(renderCompTables());
+		this.append( renderCompTables() );
 	};
 
 	function renderCompTables() {
 		var tempWrapper = $();
+
+		// Creating two-dim array for label assignment with default values
+		var hasColLabels = new Array();
+		for ( i = 0; i < settings.structure.length; i++ ) {
+			hasColLabels[i] = [false, false];
+		}
+
+		// Setting label assignment values
+		$( ["header", "footer"] ).each( function( index, value ) {
+			var sVal = settings[value];
+
+			if ( typeof sVal === "string" && sVal !== "none" ) {
+				if ( sVal === "all" ) {
+					for ( i = settings.structure.length - 1; i >= 0; i-- ) {
+						hasColLabels[i][index] = true;
+					}			
+				} else if ( sVal === "first" ) {
+					hasColLabels[0][index] = true;
+				} else if ( sVal === "last" ) {
+					hasColLabels[settings.structure.length - 1][index] = true;
+				}
+			}
+
+			if ( typeof sVal === "number" && sVal !== 0 ) {
+				for ( i = settings.structure.length - 1; i >= 0; i-- ) {
+					if ( i % Math.abs( sVal ) === 0 ) hasColLabels[i][index] = true;
+				}
+			}
+		});
 
 		// Create all necessary tables
 		$(settings.structure).each( function( tIndex, tValue ) {
@@ -42,42 +70,14 @@
 
 			$( "caption", table ).html( tValue.title );
 
-			// Create first header
-			if( 0 === tIndex && "first" === settings.header ) {
-
-				var thead = $( "<thead></thead>" ),
-					tr = $( "<tr></tr>" );
-
-				tr.append( $( "<td></td>" ) );
-
-				for( var i = 0; i < settings.columns; i++ ) {
-					tr.append( $( "<th></th>" ) );
-				}
-
-				table.find( "caption" ).after( thead.append( tr ) );
-
-			}
-
-			// Create last footer
-			if(( settings.structure.length - 1 ) === tIndex && "last" === settings.footer ) {
-
-				var tfoot = $( "<tfoot></tfoot>" ),
-					tr = $( "<tr></tr>" );
-
-				tr.append( $( "<td></td>" ) );
-
-				for( var i = 0; i < settings.columns; i++ ) {
-					tr.append( $( "<th></th>" ) );
-				}
-
-				table.find( "tbody" ).after( tfoot.append( tr ) );
-
-			}
+			// Insert the head or foot to each enabled table (label assignment)
+			if ( hasColLabels[tIndex][0] ) table.children( "caption" ).after( createColLabels( "thead" ) );
+			if ( hasColLabels[tIndex][1] ) table.children( "tbody" ).after( createColLabels( "tfoot" ) );
 
 			// Create table body
 			$( this.rows ).each( function( rIndex, rValue ) {
-				var tr = $( "<tr></tr>" ),
-					th = $( "<th></th>" ).html( rValue.name );
+				var tr = $( "<tr>" ),
+					th = $( "<th>" ).html( rValue.name );
 
 				// Assign attributes to current row
 				assignAttributes( rValue.trAttr, tr );
@@ -90,7 +90,7 @@
 
 				// Add empty columns to current row for the data to be compared
 				for( var i = 0; i < settings.columns; i++ ) {
-					tr.append( $( "<td></td>" ) );
+					tr.append( $( "<td>" ) );
 				}
 
 				tbody.append( tr );
@@ -103,13 +103,13 @@
 	}
 
 	// Clear a column of any existing data, including headers and footers
-	$.fn.compTable.clearColumn = function(colIndex) {
+	$.fn.compTable.clearColumn = function( colIndex ) {
 
 		// Iterate over the available tables
 		$( settings.structure ).each( function( tIndex, tValue ) {
 
 			// Clear headers and footers
-			$( "#" + tValue.id + " > thead > tr, "+
+			$( "#" + tValue.id + " > thead > tr, " +
 			   "#" + tValue.id + " > tfoot > tr" ).
 					find( "th:eq(" + colIndex + ")"  ).html( "" );
 
@@ -122,8 +122,7 @@
 	};
 
 	// Insert data (dataId) into a column (colIndex), including headers and footers
-	$.fn.compTable.insertColumnData = function(colIndex, dataId, clearOnEmpty) {
-
+	$.fn.compTable.insertColumnData = function( colIndex, dataId, clearOnEmpty ) {
 		clearOnEmpty = typeof clearOnEmpty !== "undefined" ? clearOnEmpty : false;
 
 		if( typeof settings.content[ dataId ] !== "undefined" ) {
@@ -132,7 +131,7 @@
 			$( settings.structure ).each( function( tIndex, tValue ) {
 
 				// Set correct header and footer text
-				$( "#" + tValue.id + " > thead > tr, "+
+				$( "#" + tValue.id + " > thead > tr, " +
 				   "#" + tValue.id + " > tfoot > tr" ).
 					find( "th:eq(" + colIndex + ")"  ).html( dataId );
 
@@ -144,13 +143,14 @@
 				});
 
 			});
-		} else if (clearOnEmpty) {
+		} else if ( clearOnEmpty ) {
+
 			// Clear column of any existing data
 			$().compTable.clearColumn( colIndex );
 		}
 	};
 
-	function assignAttributes (source, target) {
+	function assignAttributes ( source, target ) {
 		if( typeof source !== "undefined" ) {
 			for( var attrIndex in source ) {
 				target.attr( attrIndex, source[ attrIndex ] );
@@ -158,4 +158,17 @@
 		}
 	}
 
+	// Creates the <tfoot> or <thead> elements
+	function createColLabels ( pos ) {
+		var tPos = $( document.createElement( pos ) ),
+			tr = $( "<tr>" );
+
+		tr.append( $( "<td>" ) );
+
+		for( var i = 0; i < settings.columns; i++ ) {
+			tr.append( $( "<th>" ) );
+		}
+
+		return tPos.append( tr );;
+	}
 }( jQuery ));
