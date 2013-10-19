@@ -6,7 +6,9 @@
     "expr": true,
     "globals": {
 		"$": false,
-		"jQuery": false
+		"document": false,
+		"jQuery": false,
+		"window": false
     },
     "immed": true,
     "noarg": true,

@@ -4,7 +4,8 @@
  * @license https://github.com/Okeanos/compTable/blob/master/LICENSE
  */
 (function( $ ) {
-	var settings;
+	var i,
+		settings;
 
 	$.fn.compTable = function( options ) {
 		var defaults = {
@@ -23,10 +24,9 @@
 	};
 
 	function renderCompTables() {
-		var tempWrapper = $();
+		var tempWrapper = $(),
+			hasColLabels = []; // Creating two-dim array for label assignment with default values
 
-		// Creating two-dim array for label assignment with default values
-		var hasColLabels = new Array();
 		for ( i = 0; i < settings.structure.length; i++ ) {
 			hasColLabels[i] = [false, false];
 		}
@@ -39,7 +39,7 @@
 				if ( sVal === "all" ) {
 					for ( i = settings.structure.length - 1; i >= 0; i-- ) {
 						hasColLabels[i][index] = true;
-					}			
+					}
 				} else if ( sVal === "first" ) {
 					hasColLabels[0][index] = true;
 				} else if ( sVal === "last" ) {
@@ -49,7 +49,7 @@
 
 			if ( typeof sVal === "number" && sVal !== 0 ) {
 				for ( i = settings.structure.length - 1; i >= 0; i-- ) {
-					if ( i % Math.abs( sVal ) === 0 ) hasColLabels[i][index] = true;
+					if ( i % Math.abs( sVal ) === 0 ) { hasColLabels[i][index] = true; }
 				}
 			}
 		});
@@ -71,8 +71,12 @@
 			$( "caption", table ).html( tValue.title );
 
 			// Insert the head or foot to each enabled table (label assignment)
-			if ( hasColLabels[tIndex][0] ) table.children( "caption" ).after( createColLabels( "thead" ) );
-			if ( hasColLabels[tIndex][1] ) table.children( "tbody" ).after( createColLabels( "tfoot" ) );
+			if ( hasColLabels[tIndex][0] ) {
+				table.children( "caption" ).after( createColLabels( "thead" ) );
+			}
+			if ( hasColLabels[tIndex][1] ) {
+				table.children( "tbody" ).after( createColLabels( "tfoot" ) );
+			}
 
 			// Create table body
 			$( this.rows ).each( function( rIndex, rValue ) {
@@ -89,7 +93,7 @@
 				tr.append( th );
 
 				// Add empty columns to current row for the data to be compared
-				for( var i = 0; i < settings.columns; i++ ) {
+				for( i = 0; i < settings.columns; i++ ) {
 					tr.append( $( "<td>" ) );
 				}
 
@@ -165,10 +169,10 @@
 
 		tr.append( $( "<td>" ) );
 
-		for( var i = 0; i < settings.columns; i++ ) {
+		for( i = 0; i < settings.columns; i++ ) {
 			tr.append( $( "<th>" ) );
 		}
 
-		return tPos.append( tr );;
+		return tPos.append( tr );
 	}
-}( jQuery ));
+}( jQuery, document, window ));
