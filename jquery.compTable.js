@@ -11,45 +11,53 @@
 		var defaults = {
 			structure: "",
 			content: "",
+			// How many columns should be generated for content to be compared
 			columns: 3,
 			defaultValues: [],
+			// String first and last; Integer values for every nth, for all use = 1,
+			// anything else, preferably Boolean false, for none
 			header: "first",
+			// String first and last; Integer values for every nth, for all use = 1,
+			// anything else, preferably Boolean false, for none
 			footer: "last",
 			tableAttr: {},
 		};
 
 		settings = $.extend( {}, defaults, options );
 
+		// Make sure any numbers for footer and header are positive integers
+		if(typeof settings.header === "number") {
+			settings.header = Math.round ( Math.abs( settings.header ) );
+		}
+		if(typeof settings.footer === "number") {
+			settings.footer = Math.round ( Math.abs( settings.footer ) );
+		}
+
 		this.append( renderCompTables() );
 	};
 
 	function renderCompTables() {
 		var tempWrapper = $(),
-			hasColLabels = []; // Creating two-dim array for label assignment with default values
+			hasColLabels = [];
 
+		// Create default values for all table headers and footers, i.e. headers/footers yes or no
 		for ( i = 0; i < settings.structure.length; i++ ) {
 			hasColLabels[i] = [false, false];
 		}
 
-		// Setting label assignment values
+		// Assign correct header and footer settings based on given parameters
 		$( ["header", "footer"] ).each( function( index, value ) {
-			var sVal = settings[value];
-
-			if ( typeof sVal === "string" && sVal !== "none" ) {
-				if ( sVal === "all" ) {
-					for ( i = settings.structure.length - 1; i >= 0; i-- ) {
-						hasColLabels[i][index] = true;
-					}
-				} else if ( sVal === "first" ) {
-					hasColLabels[0][index] = true;
-				} else if ( sVal === "last" ) {
-					hasColLabels[settings.structure.length - 1][index] = true;
+			if ( typeof settings[ value ] === "string" ) {
+				if ( settings[ value ] === "first" ) {
+					hasColLabels[ 0 ][ index ] = true;
+				} else if ( settings[ value ] === "last" ) {
+					hasColLabels[ settings.structure.length - 1][ index ] = true;
 				}
-			}
-
-			if ( typeof sVal === "number" && sVal !== 0 ) {
+			} else if ( typeof settings[ value ] === "number" && settings[ value ] !== 0 ) {
 				for ( i = settings.structure.length - 1; i >= 0; i-- ) {
-					if ( i % Math.abs( sVal ) === 0 ) { hasColLabels[i][index] = true; }
+					if ( i % settings[ value ] === 0 ) {
+						hasColLabels[ i ][ index ] = true;
+					}
 				}
 			}
 		});
@@ -71,11 +79,11 @@
 			$( "caption", table ).html( tValue.title );
 
 			// Insert the head or foot to each enabled table (label assignment)
-			if ( hasColLabels[tIndex][0] ) {
-				table.children( "caption" ).after( createColLabels( "thead" ) );
+			if ( hasColLabels[ tIndex ][ 0 ] ) {
+				table.children( "caption" ).after( createColLabels( "<thead>" ) );
 			}
-			if ( hasColLabels[tIndex][1] ) {
-				table.children( "tbody" ).after( createColLabels( "tfoot" ) );
+			if ( hasColLabels[ tIndex ][ 1 ] ) {
+				table.children( "tbody" ).after( createColLabels( "<tfoot>" ) );
 			}
 
 			// Create table body
@@ -154,6 +162,7 @@
 		}
 	};
 
+	// Assign html attributes in source to the target
 	function assignAttributes ( source, target ) {
 		if( typeof source !== "undefined" ) {
 			for( var attrIndex in source ) {
@@ -164,7 +173,7 @@
 
 	// Creates the <tfoot> or <thead> elements
 	function createColLabels ( pos ) {
-		var tPos = $( document.createElement( pos ) ),
+		var tPos = $( pos ),
 			tr = $( "<tr>" );
 
 		tr.append( $( "<td>" ) );
