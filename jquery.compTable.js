@@ -16,51 +16,48 @@
 			defaultValues: [],
 			// String first and last; Integer values for every nth, for all use = 1,
 			// anything else, preferably Boolean false, for none
-			header: "first",
+			thead: "first",
 			// String first and last; Integer values for every nth, for all use = 1,
 			// anything else, preferably Boolean false, for none
-			footer: "last",
+			tfoot: "last",
 			tableAttr: {},
 		};
 
 		settings = $.extend( {}, defaults, options );
 
 		// Make sure any numbers for footer and header are positive integers
-		if(typeof settings.header === "number") {
-			settings.header = Math.round ( Math.abs( settings.header ) );
+		if ( typeof settings.thead === "number" ) {
+			settings.thead = Math.round ( Math.abs( settings.thead ) );
 		}
-		if(typeof settings.footer === "number") {
-			settings.footer = Math.round ( Math.abs( settings.footer ) );
+		if ( typeof settings.tfoot === "number" ) {
+			settings.tfoot = Math.round ( Math.abs( settings.tfoot ) );
+		}
+
+		// Convert first/last to corresponding integer values
+		if ( typeof settings.thead === "string" ) {
+			if (settings.thead === "first" ) {
+				settings.thead = -1;
+			} else if ( settings.thead === "last" ) {
+				settings.thead = settings.structure.length;
+			} else {
+				settings.thead = 0;
+			}
+		}
+		if ( typeof settings.tfoot === "string" ) {
+			if (settings.tfoot === "first" ) {
+				settings.tfoot = -1;
+			} else if ( settings.tfoot === "last" ) {
+				settings.tfoot = settings.structure.length;
+			} else {
+				settings.tfoot = 0;
+			}
 		}
 
 		this.append( renderCompTables() );
 	};
 
 	function renderCompTables() {
-		var tempWrapper = $(),
-			hasColLabels = [];
-
-		// Create default values for all table headers and footers, i.e. headers/footers yes or no
-		for ( i = 0; i < settings.structure.length; i++ ) {
-			hasColLabels[i] = [false, false];
-		}
-
-		// Assign correct header and footer settings based on given parameters
-		$( ["header", "footer"] ).each( function( index, value ) {
-			if ( typeof settings[ value ] === "string" ) {
-				if ( settings[ value ] === "first" ) {
-					hasColLabels[ 0 ][ index ] = true;
-				} else if ( settings[ value ] === "last" ) {
-					hasColLabels[ settings.structure.length - 1][ index ] = true;
-				}
-			} else if ( typeof settings[ value ] === "number" && settings[ value ] !== 0 ) {
-				for ( i = settings.structure.length - 1; i >= 0; i-- ) {
-					if ( i % settings[ value ] === 0 ) {
-						hasColLabels[ i ][ index ] = true;
-					}
-				}
-			}
-		});
+		var tempWrapper = $();
 
 		// Create all necessary tables
 		$(settings.structure).each( function( tIndex, tValue ) {
@@ -79,12 +76,8 @@
 			$( "caption", table ).html( tValue.title );
 
 			// Insert the head or foot to each enabled table (label assignment)
-			if ( hasColLabels[ tIndex ][ 0 ] ) {
-				table.children( "caption" ).after( createColLabels( "<thead>" ) );
-			}
-			if ( hasColLabels[ tIndex ][ 1 ] ) {
-				table.children( "tbody" ).after( createColLabels( "<tfoot>" ) );
-			}
+			table.children( "caption" ).after( createColLabels( "thead", tIndex ) );
+			table.children( "tbody" ).after( createColLabels( "tfoot", tIndex ) );
 
 			// Create table body
 			$( this.rows ).each( function( rIndex, rValue ) {
@@ -137,7 +130,7 @@
 	$.fn.compTable.insertColumnData = function( colIndex, dataId, clearOnEmpty ) {
 		clearOnEmpty = typeof clearOnEmpty !== "undefined" ? clearOnEmpty : false;
 
-		if( typeof settings.content[ dataId ] !== "undefined" ) {
+		if ( typeof settings.content[ dataId ] !== "undefined" ) {
 
 			// iterate over the available tables
 			$( settings.structure ).each( function( tIndex, tValue ) {
@@ -163,25 +156,41 @@
 	};
 
 	// Assign html attributes in source to the target
+	// already existing attribute values will be kept and not overridden
 	function assignAttributes ( source, target ) {
-		if( typeof source !== "undefined" ) {
-			for( var attrIndex in source ) {
-				target.attr( attrIndex, source[ attrIndex ] );
-			}
+		if ( typeof source !== "undefined" ) {
+			jQuery.each(source, function( attrIndex, attrValue ) {
+				target.attr( attrIndex, function( index, attr ) {
+					return attrValue + ( attr !== undefined ? " " + attr : "" );
+				});
+			});
 		}
 	}
 
-	// Creates the <tfoot> or <thead> elements
-	function createColLabels ( pos ) {
-		var tPos = $( pos ),
+	// Creates the <tfoot> and <thead> elements based on pos and index
+	function createColLabels ( pos, index ) {
+
+		var tPos = $( "<" + pos + ">" ),
 			tr = $( "<tr>" );
 
-		tr.append( $( "<td>" ) );
+			tr.append( $( "<td>" ) );
 
-		for( i = 0; i < settings.columns; i++ ) {
-			tr.append( $( "<th>" ) );
+		// Count like a sane person would do by starting with 1
+		index++;
+
+		if ( typeof settings[ pos ] === "number" &&
+				( index % settings[ pos ] === 0 &&
+					index % settings[ pos ] !== "undefined" &&
+					settings[ pos ] > 0 ) ||
+				( index === 1 && settings[ pos ] === -1 ) ) {
+
+			for( i = 0; i < settings.columns; i++ ) {
+				tr.append( $( "<th>" ) );
+			}
+
+			return tPos.append( tr );
 		}
 
-		return tPos.append( tr );
+		return;
 	}
 }( jQuery, document, window ));
