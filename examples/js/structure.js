@@ -3,7 +3,7 @@ compTableStructure = [
 		title: "Fundamentals",
 		id: "fundamentals",
 		attr: {
-			"summary": "This is a table containing information about privacy policy language fundamentals"
+			"class": "first-Table"
 		},
 		rows: [
 			{ name: "Underlying Formalism",
