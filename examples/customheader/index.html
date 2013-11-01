@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="compTable Bootstrap example">
+		<meta name="author" content="Nikolas Grottendieck, Jan Musmann">
+
+		<title>compTable custom header example</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<style>
+			body {
+				padding: 20px 0 20px 0;
+			}
+
+			table > caption {
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+				font-weight: 500;
+				line-height: 1.1;
+				font-size: 24px;
+				text-align: left;
+				padding: 24px 0 6px 0;
+			}
+
+			table > * > tr > th,
+			table > * > tr > td {
+				width: 25%;
+			}
+
+			.selectorList li:hover {
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+
+			<div class="jumbotron">
+				<div class="container">
+					<h1>compTable using Bootstrap</h1>
+					<p>This is a lousy description of what happens here.</p>
+				</div>
+			</div>
+
+			<div id="compTableWrapper">
+				<div class="page-header">
+				  <h1>Below are the generated comparison tables</h1>
+				</div>
+			</div>
+
+			<div class="modal fade" id="compTableSelector" tabindex="-1" role="dialog" aria-labelledby="compTableSelector" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title">Select language to compare</h4>
+						</div>
+						<div class="modal-body">
+							<ul class="list-unstyled selectorList">
+								<li><span class="glyphicon glyphicon-unchecked"></span> <span class="item" data-value="">Please select/Empty</span></li>
+								<li><span class="glyphicon glyphicon-unchecked"></span> <span class="item" data-value="P-RBAC">P-RBAC</span></li>
+								<li><span class="glyphicon glyphicon-unchecked"></span> <span class="item" data-value="GEO-RBAC">GEO-RBAC</span></li>
+								<li><span class="glyphicon glyphicon-unchecked"></span> <span class="item" data-value="PERMIS">PERMIS</span></li>
+							</ul>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-primary">Save changes</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+
+			<footer>
+				<hr />
+				&copy; 2013 Nikolas Grottendieck, Jan Musmann
+			</footer>
+
+		</div><!-- /.container -->
+		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="../../jquery.compTable.js"></script>
+		<script src="../js/structure.js"></script>
+		<script src="../js/data.js"></script>
+		<script>
+		jQuery(document).ready(function ($) {
+			$("#compTableWrapper").compTable(
+				{
+					structure: compTableStructure,
+					content: compTableContent,
+					columns: 3,
+					defaultValues: {
+						thead: "<button class='btn btn-primary btn-xs compTableSelector' type='button' data-toggle='modal' data-target='#compTableSelector'>Select Language</button>",
+						tfoot: "<button class='btn btn-primary btn-xs compTableSelector' type='button' data-toggle='modal' data-target='#compTableSelector'>Select Language</button>",
+						identifier: "data-id"
+					},
+					thead: "first",
+					tfoot: "last",
+					tableAttr: {
+						"class": "table table-bordered",
+					}
+				}
+			);
+			$("th").tooltip({placement: "top", container: "body"});
+
+			$(".compTableSelector").click(function() {
+				var column = $(this).attr("data-id");
+				$("#compTableSelector .selectorList > li").click(function() {
+					$(this).find(".glyphicon").toggleClass("glyphicon-unchecked");
+					$(this).find(".glyphicon").toggleClass("glyphicon-check");
+
+					console.log(this);
+					console.log(column + "/" + $(this).find(".item").attr("data-value"));
+					$().compTable.insertColumnData(column , $(this).find(".item").attr("data-value") , true);
+					$("#compTableSelector").modal("hide");
+				});
+			});
+		});
+		</script>
+	</body>
+</html>

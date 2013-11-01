@@ -14,7 +14,11 @@
 			renderTables: true,
 			// How many columns should be generated for content to be compared
 			columns: 3,
-			defaultValues: [],
+			defaultValues: {
+				thead: "",
+				tfoot: "",
+				identifier: ""
+			},
 			// String first and last; Integer values for every nth, for all use = 1,
 			// anything else, preferably Boolean false, for none
 			thead: "first",
@@ -113,13 +117,31 @@
 	// Clear a column of any existing data, including headers and footers
 	$.fn.compTable.clearColumn = function( colIndex ) {
 
+		var defaultValue,
+			attr = {};
+
 		// Iterate over the available tables
 		$( settings.structure ).each( function( tIndex, tValue ) {
 
-			// Clear headers and footers
-			$( "#" + tValue.id + " > thead > tr, " +
-			   "#" + tValue.id + " > tfoot > tr" ).
-					find( "th:eq(" + colIndex + ")"  ).html( "" );
+			// Clear headers and footers and fill with default values
+			$( "#" + tValue.id + " > thead > tr " ).
+					find( "th:eq(" + colIndex + ")"  ).each( function( thIndex, thValue ) {
+						// put identifier for each column into each default value for easy grabs
+						defaultValue = $( settings.defaultValues.thead );
+						attr[ settings.defaultValues.identifier ] = thIndex;
+						assignAttributes( attr, defaultValue );
+						$( this ).html( defaultValue );
+			});
+
+
+			$( "#" + tValue.id + " > tfoot > tr" ).
+					find( "th:eq(" + colIndex + ")"  ).each( function( thIndex, thValue ) {
+						// put identifier for each column into each default value for easy grabs
+						defaultValue = $( settings.defaultValues.tfoot );
+						attr[ settings.defaultValues.identifier ] = thIndex;
+						assignAttributes( attr, defaultValue );
+						$( this ).html( defaultValue );
+			});
 
 			// Clear body content
 			$( "#" + tValue.id + " > tbody > tr" ).each( function() {
@@ -159,12 +181,14 @@
 	};
 
 	// Assign html attributes in source to the target
-	// already existing attribute values will be kept and not overridden
-	function assignAttributes ( source, target ) {
+	// already existing attribute values will be kept and not overridden by default
+	function assignAttributes ( source, target, override ) {
+		override = typeof override !== "undefined" ? override : false;
+
 		if ( typeof source !== "undefined" ) {
 			jQuery.each(source, function( attrIndex, attrValue ) {
 				target.attr( attrIndex, function( index, attr ) {
-					return attrValue + ( attr !== undefined ? " " + attr : "" );
+					return attrValue + ( ( attr !== undefined && !override ) ? " " + attr : "" );
 				});
 			});
 		}
@@ -173,7 +197,9 @@
 	// Creates the <tfoot> and <thead> elements based on pos and index
 	function createColLabels ( pos, index ) {
 
-		var tPos = $( "<" + pos + ">" ),
+		var defaultValue,
+			attr = {},
+			tPos = $( "<" + pos + ">" ),
 			tr = $( "<tr>" );
 
 			tr.append( $( "<td>" ) );
@@ -188,7 +214,13 @@
 				( index === 1 && settings[ pos ] === -1 ) ) {
 
 			for( i = 0; i < settings.columns; i++ ) {
-				tr.append( $( "<th>" ) );
+				// put identifier for each column into each default value for easy grabs
+				defaultValue = $( settings.defaultValues[ pos ] );
+				attr[ settings.defaultValues.identifier ] = i;
+				assignAttributes( attr, defaultValue );
+
+				tr.append( $( "<th></th>" ).append( defaultValue ) );
+
 			}
 
 			return tPos.append( tr );
