@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="compTable Bootstrap example">
+		<meta name="author" content="Nikolas Grottendieck, Jan Musmann">
+
+		<title>compTable Boostrap example</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<style>
+			body {
+				padding: 20px 0 20px 0;
+			}
+
+			table > caption {
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+				font-weight: 500;
+				line-height: 1.1;
+				font-size: 24px;
+				text-align: left;
+				padding: 24px 0 6px 0;
+			}
+
+			table > * > tr > th,
+			table > * > tr > td {
+				width: 25%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+
+			<div class="jumbotron">
+				<div class="container">
+					<h1>compTable using Bootstrap</h1>
+					<p>This is a lousy description of what happens here.</p>
+				</div>
+			</div>
+
+			<form id="compTableSelector" class="form-inline" role="form">
+				<fieldset>
+					<div class="row">
+						<div class="col-lg-12">
+							<legend>Select data to compare</legend>
+						</div>
+						<div class="col-lg-4">
+							<select name="compTableC1" id="compTableC1" class="form-control">
+								<option value="">Please select/Empty</option>
+								<option value="P-RBAC">P-RBAC</option>
+								<option value="GEO-RBAC">GEO-RBAC</option>
+								<option value="PERMIS">PERMIS</option>
+							</select>
+						</div>
+						<div class="col-lg-4">
+							<select name="compTableC2" id="compTableC2" class="form-control">
+								<option value="">Please select/Empty</option>
+								<option value="P-RBAC">P-RBAC</option>
+								<option value="GEO-RBAC">GEO-RBAC</option>
+								<option value="PERMIS">PERMIS</option>
+							</select>
+						</div>
+						<div class="col-lg-4">
+							<select name="compTableC3" id="compTableC3" class="form-control">
+								<option value="">Please select/Empty</option>
+								<option value="P-RBAC">P-RBAC</option>
+								<option value="GEO-RBAC">GEO-RBAC</option>
+								<option value="PERMIS">PERMIS</option>
+							</select>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+
+			<div id="compTableWrapper">
+				<div class="page-header">
+				  <h1>Below are the generated comparison tables</h1>
+				</div>
+				<table id="fundamentals" class="first-Table table table-bordered">
+					<caption>Fundamentals</caption>
+					<thead>
+						<tr>
+							<td></td>
+							<th></th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="underlyingFormalism">
+							<th data-toggle="tooltip" data-original-title="Does the language have a formal model governing its representation and functions?">Underlying Formalism</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="consistency">
+							<th data-toggle="tooltip" data-original-title="Is policy consistency enforced/checked and are conflicts in policies resolved?">Consistency</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="individualControl">
+							<th data-toggle="tooltip" data-original-title="How well can the language express privacy preferences and privacy policies in general?">Individual Control</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+				<table id="technicalBasics" class="table table-bordered">
+					<caption>Technical Basics</caption>
+					<tbody>
+						<tr class="representation">
+							<th data-toggle="tooltip" data-original-title="How are policies encoded, stored and represented?">Representation</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="requestFormat">
+							<th data-toggle="tooltip" data-original-title="How are requests made and what parameters are necessary?">Request Format</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="monotonicity">
+							<th data-toggle="tooltip" data-original-title="Is the language monotone, i.e. more information given in a request always results in more access being granted?">Monotonicity</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="policyEvaluation">
+							<th data-toggle="tooltip" data-original-title="How is a request evaluated against a policy?">Policy Evaluation</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="resultFormat">
+							<th data-toggle="tooltip" data-original-title="How and what results are returned after evaluation?">Result Format</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="extensibility">
+							<th data-toggle="tooltip" data-original-title="Can the language definitions and functionality be extended in some way?">Extensibility</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+				<table id="obligationsDisclosureLimitations" class="table table-bordered">
+					<caption>Obligations and Disclosure Limitations</caption>
+					<tbody>
+						<tr class="obligations">
+							<th data-toggle="tooltip" data-original-title="Can obligations, e.g. send a notification to the user if his information is accessed, be created?">Obligations</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="disclosureLimitations">
+							<th data-toggle="tooltip" data-original-title="Can disclosed information be limited in some way, e.g. by obfuscation?">Disclosure Limitations</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="sensitiveAssociations">
+							<th data-toggle="tooltip" data-original-title="Can data sets put into relationships so that mutually exclusive release statements or other constructs are possible?">Sensitive Associations</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="delegation">
+							<th data-toggle="tooltip" data-original-title="Can privileges and permissions delegated to other users in the system?">Delegation</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+				<table id="contextAwareness" class="table table-bordered">
+					<caption>Context-Awareness</caption>
+					<tbody>
+						<tr class="location">
+							<th data-toggle="tooltip" data-original-title="How does the language support location data?">Location</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="identity">
+							<th data-toggle="tooltip" data-original-title="Can the language handle identities, authentication, and related data structures and information?">Identity</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="activity">
+							<th data-toggle="tooltip" data-original-title="Are rules concerning actual activities such as playing football possible?">Activity</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="time">
+							<th data-toggle="tooltip" data-original-title="Are conditions with temporal applicability possible? What abut absolute rule lifetimes?">Time</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+				<table id="negotiationPolicyNesting" class="table table-bordered">
+					<caption>Negotiation and Policy Nesting</caption>
+					<tbody>
+						<tr class="negotiation">
+							<th data-toggle="tooltip" data-original-title="Can multiple instances of the system negotiate joint policies from multiple sets?">Negotiation</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="externalPolicies">
+							<th data-toggle="tooltip" data-original-title="How are requests to external policy files handled if at all possible?">External Policies</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="sensitivePolicies">
+							<th data-toggle="tooltip" data-original-title="What about policies that may not be published? Can their contents be protected while in transfer?">Sensitive Policies</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="policyNesting">
+							<th data-toggle="tooltip" data-original-title="Can policies be nested to create larger, more complex policies out of individual files?">Policy Nesting</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td></td>
+							<th></th>
+							<th></th>
+							<th></th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<footer>
+				<hr />
+				&copy; 2013 Nikolas Grottendieck, Jan Musmann
+			</footer>
+
+		</div><!-- /.container -->
+		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="../../jquery.compTable.js"></script>
+		<script src="../js/structure.js"></script>
+		<script src="../js/data.js"></script>
+		<script>
+		jQuery(document).ready(function ($) {
+			$("#compTableWrapper").compTable(
+				{
+					structure: [
+						{id: "fundamentals"},
+						{id: "technicalBasics"},
+						{id: "obligationsDisclosureLimitations"},
+						{id: "contextAwareness"},
+						{id: "negotiationPolicyNesting"}
+					],
+					content: compTableContent,
+					renderTables: false,
+				}
+			);
+			$("#compTableC1, #compTableC2, #compTableC3").change(function(){
+				$().compTable.insertColumnData( 0, $("#compTableC1").val(), true);
+				$().compTable.insertColumnData( 1, $("#compTableC2").val(), true);
+				$().compTable.insertColumnData( 2, $("#compTableC3").val(), true);
+			});
+			$('th').tooltip({placement: "top", container: "body"});
+		});
+		</script>
+	</body>
+</html>

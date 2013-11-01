@@ -11,6 +11,7 @@
 		var defaults = {
 			structure: "",
 			content: "",
+			renderTables: true,
 			// How many columns should be generated for content to be compared
 			columns: 3,
 			defaultValues: [],
@@ -53,7 +54,9 @@
 			}
 		}
 
-		this.append( renderCompTables() );
+		if ( settings.renderTables ) {
+			this.append( renderCompTables() );
+		}
 	};
 
 	function renderCompTables() {
